@@ -12,7 +12,6 @@ struct node{
     char problem[200];
     struct decision first;
     struct decision second;
-    int chance;
     struct node *next;
 };
 struct user {
@@ -88,11 +87,11 @@ struct node* create_node(FILE *fp){
     fscanf(fp, "%d", &newNode->first.people);
     fscanf(fp, "%d", &newNode->first.court);
     fscanf(fp, "%d", &newNode->first.treasury);
+    fgetc(fp);//for getting \n character in file after number
     fgets(newNode->second.context, 201, fp);
     fscanf(fp, "%d", &newNode->second.people);
     fscanf(fp, "%d", &newNode->second.court);
     fscanf(fp, "%d", &newNode->second.treasury);
-    newNode->chance = 3;
     newNode->next = NULL;
     return newNode;
 }
@@ -132,33 +131,36 @@ void game_round(struct node *list, struct user *user_info, int rand_num){
     struct node *curNode = list;
     int i,input;
     for(i = 0; i < rand_num; i++, curNode = curNode->next);
-    printf("People:%d Court:%d Treasury:%d\n", user_info.people, user_info.court, user_info.treasury);
-    printf("%s",list->problem);
-    printf("[1] %s\n", list->first.context);
-    printf("[2] %s\n", list->second.context);
+    printf("\nPeople:%d Court:%d Treasury:%d\n\n", user_info->people, user_info->court, user_info->treasury);
+    if(curNode->problem == NULL)
+        printf("ERROR");
+    printf("%s\n",curNode->problem);
+    printf("[1] %s\n", curNode->first.context);
+    printf("[2] %s\n", curNode->second.context);
     printf("> ");
     scanf("%d", &input);
-    while(input != 1 && input != 2 && input != -1){
+    while(input != 1 && input != 2 && input != -1){//if user's input is wrong
         printf("Wrong input!\n");
         printf("> ");
         scanf("%d", &input);
     }
     switch (input){
         case 1:
-            user_info->people += list->first.people;
-            user_info->court += list->first.court;
-            user_info->treasury += list->first.treasury;
+            user_info->people += curNode->first.people;
+            user_info->court += curNode->first.court;
+            user_info->treasury += curNode->first.treasury;
             break;
         case 2:
-            user_info->people += list->second.people;
-            user_info->court += list->second.court;
-            user_info->treasury += list->second.treasury;
+            user_info->people += curNode->second.people;
+            user_info->court += curNode->second.court;
+            user_info->treasury += curNode->second.treasury;
             break;
-        case 3:
+        case -1:
             exit(0);
     }
+
 }
-struct user instruction(int length, int chances[],struct node **list){
+struct user instruction(int *length, int chances[],struct node **list){
     struct user user_info;
     char user_name[50],inname[60] = "data_";//user_name is current user'name that playing game and inname is address if he/she played before
     int input, position, i;
@@ -187,14 +189,16 @@ struct user instruction(int length, int chances[],struct node **list){
         user_info.people = 50;
         user_info.court = 50;
         user_info.treasury = 50;
-        for(i = 0; i < length; i++)
+        for(i = 0; i < *length; i++)
             chances[i] = 3;
     }
     else{
         user_info = load(fpin,chances);//loading previous game data
-        for(i = 0; i < length; i++)
-            if (chances[i] == 0)
+        for(i = 0; i < *length; i++)
+            if (chances[i] == 0){
                 delete_node(list,i);//deleting nodes which they chance is zero
+                *length -= 1;
+            }
     }
     fclose(fpin);
     return user_info;
@@ -207,11 +211,28 @@ int main(){
     list = input_file();//input all the nodes from file(deleting special ones in instruction function if user played before)
     int length = list_length(list);//getting length of nodes
     int chances[length];// all the chances of each node(then we get information in instruction function)
-    user_info = instruction(length, chances, &list);
+    user_info = instruction(&length, chances, &list);
     int game_is_on = 1;//it shows when game is over
+    float average;
     while(game_is_on){
-        int r = rand()%(length + 1);
-        game_round(list,&user_info,r);
+        if(length == 0){
+            list = input_file();
+            length = list_length(list);
+        }
+        int r = rand()%(length);
+        if(chances[r] != 0){
+            game_round(list,&user_info,r);
+            chances[r] -= 1;
+            if(chances[r] == 0){
+                delete_node(&list,r);
+                length -=1;
+            }
+        }
+        average = user_info.people + user_info.court + user_info.treasury / 3.0;
+        if(average < 10 || user_info.people <= 0 || user_info.court <= 0 || user_info.treasury <= 0){
+            printf("YOU LOSE");
+            game_is_on = 0;
+        }
     }
     return 0;
 }
