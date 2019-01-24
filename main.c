@@ -20,6 +20,76 @@ struct user {
     int court;
     int treasury;
 };
+void bubble_sort(struct user arr[],int length){
+    int i,j;
+    struct user temp;
+    for(i = 0; i < length - 1; i++)
+        for(j = i+1; j < length; j++){
+            if(arr[i].people < arr[j].people){
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            else if(arr[i].court < arr[j].court){
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            else if(arr[i].treasury < arr[j].treasury){
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+}
+void advanced_rank(){
+    FILE *fpin;
+    fpin = fopen("data__rank.bin","rb");
+    if (fpin != NULL){// if such file exist:
+        struct user *users;
+        int i =  1,j, check_reading, length;
+        while(1){//read until reach the end of file
+            users = (struct user*)realloc(users, i * sizeof(struct user));
+            if(users == NULL){
+                printf("Cannot allocate users array");
+                return;
+            }
+            check_reading = fread(users + i - 1, sizeof(struct user), 1, fpin);
+            if(check_reading != 1)
+                break;
+            i++;
+        }
+        length = i;
+        bubble_sort(users, length);
+        for(j = 0; j < 10 && j < length - 1; j++){
+            printf("Rank %d: %s\n",j+1,users[j].name);
+        }
+        free(users);
+        fclose(fpin);
+    }
+}
+void save_rank(struct user *user_info){
+    FILE *fpin;
+    fpin = fopen("data__rank.bin","rb+");
+    if(fpin == NULL)
+        fpin = fopen("data__rank.bin","wb");
+    struct user temp;
+    int check_reading;
+    while(1){
+        check_reading = fread(&temp, sizeof(struct user), 1, fpin);
+        if (check_reading != 1){
+            break;
+        }
+        if(strcmp(temp.name,user_info->name) == 0){
+            fseek(fpin,-1*sizeof(struct user),SEEK_CUR);
+            break;
+        }
+    }
+    int check_writing = fwrite(user_info,sizeof(struct user),1, fpin);
+    if(check_writing != 1)
+        printf("An error occurred during saving rank file");
+    fclose(fpin);
+}
 void save(int position, struct user *user_info,int chances[],int length){
     FILE *fpout;
     int check_writing;
@@ -166,8 +236,10 @@ void game_round(struct node *list, struct user *user_info, int rand_num, int cha
                 printf("Wrong input, try another one:\n> ");
                 scanf("%d", &input);
             }
-            if(input == 1)
+            if(input == 1){
                 save(0,user_info,chances,max_length);
+                save_rank(user_info);
+            }
             else if(input == 2)
                 printf("Have a nice day ;)\n");
             exit(0);
@@ -217,6 +289,7 @@ struct user instruction(int length, int chances[],struct node **list){
     return user_info;
 }
 int main(){
+    advanced_rank();
     time_t t = time(NULL);
     srand(t);//getting random number by time
     struct node *list;
@@ -248,7 +321,6 @@ int main(){
             chances[r1] -= 1;
             if(chances[r1] == 0){
                 delete_node(&list,r1);
-                printf("node number %d is deleted!!!!!!!!!!!!!!!!!!!\n",r1);
                 length -= 1;
             }
         }
@@ -276,8 +348,10 @@ int main(){
                 printf("Wrong input, try another one:\n> ");
                 scanf("%d", &input);
             }
-            if(input == 1)
+            if(input == 1){
                 save(1, &user_info,chances,max_length);
+                save_rank(&user_info);
+            }
             else if(input == 2)
                 printf("Have a nice day ;)\n");
             game_is_on = 0;
