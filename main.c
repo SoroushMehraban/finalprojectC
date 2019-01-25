@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <windows.h>
+#define color(a) SetConsoleTextAttribute(color, a)
+
 struct decision {
         char context[200];
         int people;
@@ -20,16 +23,111 @@ struct user {
     int court;
     int treasury;
 };
+void creating_decision(){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
+    FILE *fpin1, *fpin2;
+    int i;
+    char str[100]= ".\\";
+    char c[10] = {'\0'};
+    mkdir("CHOICES_you_made");//creating folder if it does not exist
+    strcat(str,"CHOICES_you_made\\");
+    fpin1 = fopen(".\\CHOICES_you_made\\CHOICES.txt", "r+");
+    if(fpin1 == NULL){
+        fpin1 = fopen(".\\CHOICES_you_made\\CHOICES.txt", "w");
+        if (fpin1 == NULL)
+            printf("ERROR in creating CHOCES\n");
+        strcat(str,"c1.txt");
+        fpin2 =fopen(str,"w");
+        if(fpin2 == NULL)
+            printf("ERROR in creating c.txt files\n");
+        fputs("c1.txt\n",fpin1);
+        fclose(fpin1);
+    }
+    else{
+        while(!feof(fpin1)) //reading ci.txt names until reaching end of file
+            fscanf(fpin1, "%s", c);
+        printf("%s\n",c);
+        for (i = 0; i < 10 && c[i] != '\0'; i++)
+            if(c[i] == '.'){
+            c[i-1] +=1;
+            break;
+            }
+        printf("%s\n",c);
+        strcat(str,c);
+        fpin2 = fopen(str,"w");
+        fputs(c,fpin1);
+        fputc('\n',fpin1);
+        fclose(fpin1);
+    }
+    char buff[100];
+    int buff_num;
+    printf("Enter your problem: ");
+    fflush(stdin);
+    color(15);
+    gets(buff);
+    fputs(buff,fpin2);
+    fprintf(fpin2,"\n");
+    color(14);
+    printf("Enter your first decision: ");
+    color(15);
+    gets(buff);
+    fputs(buff,fpin2);
+    fprintf(fpin2,"\n");
+    color(14);
+    printf("decision effect on people : ");
+    color(15);
+    scanf("%d",&buff_num);
+    fprintf(fpin2,"%d\n",buff_num);
+    color(14);
+    printf("decision effect on court : ");
+    color(15);
+    scanf("%d",&buff_num);
+    fprintf(fpin2,"%d\n",buff_num);
+    color(14);
+    printf("decision effect on treasury : ");
+    color(15);
+    scanf("%d",&buff_num);
+    fprintf(fpin2,"%d\n",buff_num);
+    color(14);
+    printf("Enter your second decision: ");
+    fflush(stdin);
+    color(15);
+    gets(buff);
+    fputs(buff,fpin2);
+    fprintf(fpin2,"\n");
+    color(14);
+    printf("decision effect on people : ");
+    color(15);
+    scanf("%d",&buff_num);
+    fprintf(fpin2,"%d\n",buff_num);
+    color(14);
+    printf("decision effect on court : ");
+    color(15);
+    scanf("%d",&buff_num);
+    fprintf(fpin2,"%d\n",buff_num);
+    color(14);
+    printf("decision effect on treasury : ");
+    color(15);
+    scanf("%d",&buff_num);
+    color(14);
+    fprintf(fpin2,"%d\n",buff_num);
+    fclose(fpin2);
+}
 void bubble_sort(struct user arr[],int length){
     int i,j;
     struct user temp;
-    for(i = 0; i < length - 1; i++)
+    for(i = 0; i < length; i++)
         for(j = i+1; j < length; j++){
-            if(arr[i].people < arr[j].people){
+            if(arr[i].people > arr[j].people)
+                continue;
+            else if(arr[i].people < arr[j].people){
                 temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
+            else if(arr[i].court > arr[j].court)
+                continue;
             else if(arr[i].court < arr[j].court){
                 temp = arr[i];
                 arr[i] = arr[j];
@@ -43,6 +141,8 @@ void bubble_sort(struct user arr[],int length){
         }
 }
 void advanced_rank(){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
     FILE *fpin;
     fpin = fopen("data__rank.bin","rb");
     if (fpin != NULL){// if such file exist:
@@ -59,11 +159,16 @@ void advanced_rank(){
                 break;
             i++;
         }
-        length = i;
+        length = i - 1;
         bubble_sort(users, length);
-        for(j = 0; j < 10 && j < length - 1; j++){
-            printf("Rank %d: %s\n",j+1,users[j].name);
+        for(j = 0; j < 10 && j < length; j++){
+            color(j+2);
+            printf("Rank %d: ",j+1);
+            color(15);
+            printf("%s\n",users[j].name);
         }
+        printf("\n");
+        color(14);
         free(users);
         fclose(fpin);
     }
@@ -91,6 +196,8 @@ void save_rank(struct user *user_info){
     fclose(fpin);
 }
 void save(int position, struct user *user_info,int chances[],int length){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
     FILE *fpout;
     int check_writing;
     char inname[60] = "data_";
@@ -106,7 +213,9 @@ void save(int position, struct user *user_info,int chances[],int length){
     check_writing = fwrite(&position, sizeof(int), 1, fpout);
     if(check_writing != 1)
         printf("An error occurred during saving the current position\n");
-    printf("Data saved!!!\n");
+    color(2);
+    printf("\nData saved!!!\n");
+    color(15);
 }
 struct user load(FILE *fpin,int chances[], int length){
     struct user user_info;
@@ -199,17 +308,28 @@ int list_length(struct node* list){
     return len;
 }
 void game_round(struct node *list, struct user *user_info, int rand_num, int chances[], int max_length){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
     struct node *curNode = list;
     int i,input;
     for(i = 0; i < rand_num; i++, curNode = curNode->next);
+    color(2);
     printf("\nPeople:%d Court:%d Treasury:%d\n\n", user_info->people, user_info->court, user_info->treasury);
+    color(14);
     if(curNode->problem == NULL)
         printf("ERROR(NODE is empty but we are gonna open it(why?))\n");
     printf("%s\n",curNode->problem);
-    printf("[1] %s\n", curNode->first.context);
-    printf("[2] %s\n", curNode->second.context);
+    color(2);
+    printf("[1] ");
+    color(15);
+    printf("%s\n", curNode->first.context);
+    color(4);
+    printf("[2] ");
+    color(15);
+    printf("%s\n", curNode->second.context);
     printf("> ");
     scanf("%d", &input);
+    color(14);
     while(input != 1 && input != 2 && input != -1){//if user's input is wrong
         printf("Wrong input!\n");
         printf("> ");
@@ -227,45 +347,94 @@ void game_round(struct node *list, struct user *user_info, int rand_num, int cha
             user_info->treasury += curNode->second.treasury;
             break;
         case -1:
-            printf("Do you want to save the game?\n"
-               "[1] yes\n"
-               "[2] no\n> ");
+            printf("Do you want to save the game?\n");
+            color(2);
+            printf("[1] ");
+            color(15);
+            printf("yes\n");
+            color(4);
+            printf("[2] ");
+            color(15);
+            printf("no\n>");
             int input;
             scanf("%d", &input);
+            color(14);
             while(input != 1 && input != 2){
                 printf("Wrong input, try another one:\n> ");
+                fflush(stdin);//if input is a string istead of number we should flush the keyboard buffer
                 scanf("%d", &input);
             }
             if(input == 1){
                 save(0,user_info,chances,max_length);
                 save_rank(user_info);
             }
-            else if(input == 2)
+            else if(input == 2){
                 printf("Have a nice day ;)\n");
+                color(15);
+            }
             exit(0);
     }
 
 }
 struct user instruction(int length, int chances[],struct node **list){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
+    while(1){
+        printf("select one of this options:\n");
+        color(2);
+        printf("[1] ");
+        color(15);
+        printf("Create a choice\n");
+        color(4);
+        printf("[2] ");
+        color(15);
+        printf("Play game\n> ");
+        int input;
+        scanf("%d",&input);
+        color(14);
+        while(input != 1 && input != 2){
+            printf("Wrong input, try another one:\n> ");
+            color(15);
+            fflush(stdin);//if input is a string istead of number we should flush the keyboard buffer
+            scanf("%d",&input);
+            color(14);
+        }
+        if(input == 1)
+            creating_decision();
+        else if (input == 2)
+            break;
+    }
+    fflush(stdin);
     struct user user_info;
     char user_name[50],inname[60] = "data_";//user_name is current user'name that playing game and inname is address if he/she played before
     int input, position, i;
     FILE *fpin;
     printf("Enter your name:\n> ");
+    color(15);
     gets(user_name);
+    color(14);
     strcat(inname,user_name);//appending user_name to inname for checking saved file
     strcat(inname,".bin");//appending file suffix
     fpin = fopen(inname,"r");
     if(fpin == NULL)//if there is no inname file, then user is a new user
         printf("Welcome to the game!!!, remember you can always leave by pressing -1\n");
     else{
-        printf("Welcome %s, select one of this options:\n"
-               "[1] Start a new game\n"
-               "[2] Resume a game\n> ",user_name);
+        printf("Welcome %s, select one of this options:\n",user_name);
+        color(2);
+        printf("[1] ");
+        color(15);
+        printf("Start a new game\n");
+        color(4);
+        printf("[2] ");
+        color(15);
+        printf("Resume a game\n> ");
         scanf("%d",&input);
+        color(14);
         while(input != 1 && input != 2){
             printf("Wrong input, try another one:\n> ");
+            color(15);
             scanf("%d",&input);
+            color(14);
         }
     }
     fseek(fpin,-1 *sizeof(int), SEEK_END);//change file position handler to where position(integer) is in file
@@ -289,6 +458,8 @@ struct user instruction(int length, int chances[],struct node **list){
     return user_info;
 }
 int main(){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
     advanced_rank();
     time_t t = time(NULL);
     srand(t);//getting random number by time
@@ -333,27 +504,41 @@ int main(){
         if(user_info.treasury < 0)
             user_info.treasury = 0;
         if(average < 10 || user_info.people == 0 || user_info.court == 0 || user_info.treasury == 0){// if user lose :
+            color(4);
             if (average < 10)
                 printf("You lose because your average of 3 parameters are less than 10\n");
             else{
                 printf("\nPeople:%d Court:%d Treasury:%d\n\n", user_info.people, user_info.court, user_info.treasury);
-                printf("You lose because one of the parameters above become zero");
+                printf("You lose because one of the parameters above become zero\n");
             }
-            printf("Do you want to save the game?\n"
-               "[1] yes\n"
-               "[2] no\n> ");
+            color(14);
+            printf("Do you want to save the game?\n");
+            color(2);
+            printf("[1] ");
+            color(15);
+            printf("yes\n");
+            color(4);
+            printf("[2] ");
+            color(15);
+            printf("no\n>");
             int input;
             scanf("%d", &input);
+            color(14);
             while(input != 1 && input != 2){
                 printf("Wrong input, try another one:\n> ");
+                color(15);
+                fflush(stdin);//if input is a string istead of number we should flush the keyboard buffer
                 scanf("%d", &input);
+                color(14);
             }
             if(input == 1){
                 save(1, &user_info,chances,max_length);
                 save_rank(&user_info);
             }
-            else if(input == 2)
+            else if(input == 2){
                 printf("Have a nice day ;)\n");
+                color(15);
+            }
             game_is_on = 0;
         }
     }
