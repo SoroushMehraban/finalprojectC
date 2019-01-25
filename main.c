@@ -379,6 +379,16 @@ void save(int position, struct user *user_info,int chances[],int length){
     color(2);
     printf("\nData saved!!!\n");
     color(15);
+    fclose(fpout);
+}
+void save_middle(struct user *user_info,int chances[],int length){
+    FILE *fpout;
+    int check_writing;
+    char inname[60] = "data__middle.bin";
+    fpout = fopen(inname, "wb");
+    fwrite(user_info, sizeof(struct user), 1, fpout);
+    fwrite(chances, sizeof(int), length, fpout);
+    fclose(fpout);
 }
 struct user load(FILE *fpin,int chances[], int length){
     struct user user_info;
@@ -532,10 +542,18 @@ void game_round(struct node *list, struct user *user_info, int rand_num, int cha
                 color(14);
             }
             if(input == 1){
+                int check;
+                check = remove(".\\data__middle.bin");
+                if (check != 0)
+                    printf("Failed to remove middle data file\n");
                 save(0,user_info,chances,max_length);
                 save_rank(user_info);
             }
             else if(input == 2){
+                int check;
+                check = remove(".\\data__middle.bin");
+                if (check != 0)
+                    printf("Failed to remove middle data file\n");
                 printf("Have a nice day ;)\n");
                 color(15);
             }
@@ -573,6 +591,45 @@ struct user instruction(int length, int chances[],struct node **list){
     }
     fflush(stdin);
     struct user user_info;
+    //if we leave the game unexpectedly before:
+    FILE *fpin_middle;
+    fpin_middle = fopen("data__middle.bin","rb");
+    if(fpin_middle != NULL){
+        user_info = load(fpin_middle,chances,length);//loading previous game data
+        int input, i;
+        printf("You leave the game unexpectedly last time, do you want to resume game?\n")
+        color(2);
+        printf("[1] ");
+        color(15);
+        printf("Start a new game\n");
+        color(4);
+        printf("[2] ");
+        color(15);
+        printf("Resume a game\n> ");
+        scanf("%d",&input);
+        color(14);
+        while(input != 1 && input != 2){
+            printf("Wrong input, try another one:\n> ");
+            color(15);
+            scanf("%d",&input);
+            color(14);
+        }
+        if(input == 1){
+        user_info.people = 50;
+        user_info.court = 50;
+        user_info.treasury = 50;
+        for(i = 0; i < length; i++)
+            chances[i] = 3;
+        }
+        else if(input == 2) {
+            for(i = 0; i < length; i++)
+                if (chances[i] == 0)
+                    delete_node(list,i);//deleting nodes which they chance is zero
+        }
+        fclose(fpin_middle);
+        return user_info;
+    }
+    //........................................
     char user_name[50],inname[60] = "data_";//user_name is current user'name that playing game and inname is address if he/she played before
     int input, position, i;
     FILE *fpin;
@@ -663,6 +720,9 @@ int main(){
                 length -= 1;
             }
         }
+        //saving in middle if something unexpectedly happened :
+        save_middle(&user_info,chances,max_length);
+
         //ASCII CODE SHOWING :
         if(user_info.people > 30)
             few_people = 1;
@@ -721,10 +781,18 @@ int main(){
                 color(14);
             }
             if(input == 1){
+                int check;
+                check = remove(".\\data__middle.bin");
+                if (check != 0)
+                    printf("Failed to remove middle data file\n");
                 save(1, &user_info,chances,max_length);
                 save_rank(&user_info);
             }
             else if(input == 2){
+                int check;
+                check = remove(".\\data__middle.bin");
+                if (check != 0)
+                    printf("Failed to remove middle data file\n");
                 printf("Have a nice day ;)\n");
                 color(15);
             }
