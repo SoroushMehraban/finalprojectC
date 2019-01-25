@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <windows.h>
-#define color(a) SetConsoleTextAttribute(color, a)
+#define color(a); SetConsoleTextAttribute(color, a)
 
 struct decision {
         char context[200];
@@ -23,6 +23,161 @@ struct user {
     int court;
     int treasury;
 };
+void ASCII_art(int num){
+    HANDLE  color;
+    color = GetStdHandle(STD_OUTPUT_HANDLE);
+    switch(num){
+        case 0:
+            color(14);
+            printf("                    .\n"
+                   "                   / \\ \n"
+                   "                  _\\ /_ \n"
+                   "        .     .  (,'v`.)  .     . \n"
+                   "        \\)   ( )  ,' `.  ( )   (/ \n"
+                   "         \\`. / `-'     `-' \\ ,'/ \n"
+                   "          : '    _______    ' : \n"
+                   "          |  _,-'  ,-.  `-._  | \n"
+                   "          |,' ( )__`-'__( ) `.| \n"
+                   "          (|,-,'-._   _.-`.-.|) \n");
+            color(15);
+            printf("          /  /");
+            color(15);
+            printf("<( o)> <( o)>");
+            color(15);
+            printf("\\  \\ \n          :  :     ");
+            color(15);
+            printf("| |     ");
+            color(15);
+            printf(":  : \n          |  |     ");
+            color(15);
+            printf("; :     ");
+            color(15);
+            printf("|  | \n          |  |    ");
+            color(15);
+            printf("(.-.)    ");
+            color(15);
+            printf("|  | \n          |  |  ");
+            color(15);
+            printf(",' ___ `.  ");
+            color(15);
+            printf("|  | \n          ;  |");
+            color(15);
+            printf(")/ ,'---'. \\(");
+            color(15);
+            printf("|  : \n")
+            color(4);
+            printf("      _,-/   ");
+            color(15);
+            printf("|/\\(       )/\\|   ");
+            color(4);
+            printf("\\-._ \n_..--'.-(    ");
+            color(15);
+            printf("|   `-'''-'   |    ");
+            color(4);
+            printf(")-.`--.._ \n         `.  ;");
+            color(15);
+            printf("`._________,'");
+            color(4);
+            printf(":  ,' \n        ,' `/               \\'`. \n             `------.------' \n                    ' \n");
+            color(14);
+            break;
+        case 1:
+            color(12);
+            printf("   /\\                                                        /\\ \n"
+                   "  |  |                                                      |  | \n"
+                   " /----\\                    Be Careful                      /----\\ \n"
+                   "[______]             Your court is at danger!!!           [______] \n"
+                   " |    |         _____                        _____         |    | \n"
+                   " |[]  |        [     ]                      [     ]        |  []| \n"
+                   " |    |       [_______][ ][ ][ ][][ ][ ][ ][_______]       |    | \n"
+                   " |    [ ][ ][ ]|     |  ,----------------,  |     |[ ][ ][ ]    | \n"
+                   " |             |     |/'   ");
+            color(15);
+            printf(" ____..____ ");
+            color(12);
+            printf("   '\\|     |             | \n  \\  []        |     |    ");
+            color(15);
+            printf("/'    ||    '\\    ");
+            color(12);
+            printf("|     |        []  / \n   |      []   |     |   ");
+            color(15);
+            printf("|o     ||     o|   ");
+            color(12);
+            printf("|     |  []       | \n   |           |  _  |   ");
+            color(15);
+            printf("|     _||_     |   ");
+            color(12);
+            printf("|  _  |           | \n   |   []      | (_) |   ");
+            color(15);
+            printf("|    (_||_)    |   ");
+            color(12);
+            printf("| (_) |       []  | \n   |           |     |   ");
+            color(15);
+            printf("|     (||)     |   ");
+            color(12);
+            printf("|     |           | \n   |           |     |   ");
+            color(15);
+            printf("|      ||      |   ");
+            color(12);
+            printf("|     |           | \n /''           |     |   ");
+            color(15);
+            printf("|o     ||     o|   ");
+            color(12);
+            printf("|     |           ''\\ \n[_____________[_______]");
+            color(15);
+            printf("--'------''------'--");
+            color(12);
+            printf("[_______]_____________] \n");
+            color(14);
+            break;
+        case 2:
+            color(15);
+            printf("                                                          ....... \n"
+                   "      ***           @@@@@@@       #############       .:::::::::::::.  \n"
+                   "    *******         @@  @@@@      ##         ##      .::'  '''''  '::. \n"
+                   "   *********       @@    @@@      #  ~~   ~~  #      :::           ::: \n"
+                   "/\\* ### ### */\\    @ 0  0 @@@     #  ()   ()  #      :::           ::: \n"
+                   "|    @ / @    |   @@  I   @@@@    (     ^     )      :::           ::: \n"
+                   "\/\\    ^    /\\/   @@      @@@@     |         |       ::'           ':: \n"
+                   "   \\  ===  /      @@  ==  @@@      |  {===}  |      : : /~~~' '~~~\\ : : \n"
+                   "    \\_____/        @+     @@        \       /           :(:   |   :): \n"
+                   "     _|_|_         @+++  +@@       /  -----  \\      '.:     / \\     :.' \n"
+                   "  *$$$$$$$$$*       @+   +@     ---  |%\ /%|  ---        ':    (. .)    :' \n"
+                   "                     +88$8     /     |%%%%%|     \\       '.   .:::::.  .' \n"
+                   "                                     |%/ \%|              :   <----->  :   \n"
+                   "                                                       '.  ~:::~  .' \n"
+                   "                                                         '.  '  .'     \n"
+                   "                                                           ''''' \n"
+                   "            People Are mad At you !!! pay them more attention\n");
+            color(14);
+            break;
+        case 3:
+            color(14);
+            printf("******************************************************************************* \n"
+                  "          |                   |                  |                     | \n"
+                  " _________|________________.=""_;=.______________|_____________________|_______ \n"
+                  "|                   |  ,-\"_,=\"\"     `\"=.|                  | \n"
+                  "|___________________|__\"=._o`\"-._        `\"=.______________|___________________ \n"
+                  "          |                `\"=._o`\"=._      _`\"=._                     | \n"
+                  " _________|_____________________:=._o \"=._.\"_.-=\"'\"=.__________________|_______ \n"
+                  "|                   |    __.--\" , ; `\"=._o.\" ,-\"""-._ \".   | \n"
+                  "|___________________|_._\"  ,. .` ` `` ,  `\"-._\"-._   \". '__|___________________ \n"
+                  "          |           |o`\"=._` , \"` `; .\". ,  \"-._\"-._; ;              | \n"
+                  " _________|___________| ;`-.o`\"=._; .\" ` '`.\"\\` . \"-._ /_______________|_______ \n"
+                  "|                   | |o;    `\"-.o`\"=._``  '` \" ,__.--o;   | \n"
+                  "|___________________|_| ;     (#) `-.o `\"=.`_.--\"_o.-; ;___|___________________\n"
+                  "____/______/______/___|o;._    \"      `\".o|o_.--\"    ;o;____/______/______/____ \n"
+                  "/______/______/______/_\"=._o--._        ; | ;        ; ;/______/______/______/_ \n"
+                  "____/______/______/______/__\"=._o--._   ;o|o;     _._;o;____/______/______/____ \n"
+                  "/______/______/______/______/____\"=._o._; | ;_.--\"o.--\"_/______/______/______/_ \n"
+                  "____/______/______/______/______/_____\"=.o|o_.--""___/______/______/______/____ \n"
+                  "/______/______/______/______/______/______/______/______/______/______/ \n"
+                  "******************************************************************************* \n"
+                  "                        Be Careful!, Your Treasury is going to empty!\n");
+            break;
+
+    }
+}
 void creating_decision(){
     HANDLE  color;
     color = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -147,11 +302,19 @@ void advanced_rank(){
     fpin = fopen("data__rank.bin","rb");
     if (fpin != NULL){// if such file exist:
         struct user *users;
+        users = (struct user*)malloc(sizeof(struct user));
+        if(users == NULL){
+            if(users == NULL){
+                printf("Cannot allocate users array\n");
+                return;
+            }
+        }
         int i =  1,j, check_reading, length;
         while(1){//read until reach the end of file
-            users = (struct user*)realloc(users, i * sizeof(struct user));
+            if(i > 1)
+                users = (struct user*)realloc(users, i * sizeof(struct user));
             if(users == NULL){
-                printf("Cannot allocate users array");
+                printf("Cannot reallocate users array\n");
                 return;
             }
             check_reading = fread(users + i - 1, sizeof(struct user), 1, fpin);
@@ -333,7 +496,9 @@ void game_round(struct node *list, struct user *user_info, int rand_num, int cha
     while(input != 1 && input != 2 && input != -1){//if user's input is wrong
         printf("Wrong input!\n");
         printf("> ");
+        color(15);
         scanf("%d", &input);
+        color(14);
     }
     switch (input){
         case 1:
@@ -361,8 +526,10 @@ void game_round(struct node *list, struct user *user_info, int rand_num, int cha
             color(14);
             while(input != 1 && input != 2){
                 printf("Wrong input, try another one:\n> ");
-                fflush(stdin);//if input is a string istead of number we should flush the keyboard buffer
+                fflush(stdin);//if input is a string instead of number we should flush the keyboard buffer
+                color(15);
                 scanf("%d", &input);
+                color(14);
             }
             if(input == 1){
                 save(0,user_info,chances,max_length);
@@ -395,7 +562,7 @@ struct user instruction(int length, int chances[],struct node **list){
         while(input != 1 && input != 2){
             printf("Wrong input, try another one:\n> ");
             color(15);
-            fflush(stdin);//if input is a string istead of number we should flush the keyboard buffer
+            fflush(stdin);//if input is a string instead of number we should flush the keyboard buffer
             scanf("%d",&input);
             color(14);
         }
@@ -419,6 +586,7 @@ struct user instruction(int length, int chances[],struct node **list){
     if(fpin == NULL)//if there is no inname file, then user is a new user
         printf("Welcome to the game!!!, remember you can always leave by pressing -1\n");
     else{
+        ASCII_art(0);
         printf("Welcome %s, select one of this options:\n",user_name);
         color(2);
         printf("[1] ");
@@ -472,7 +640,7 @@ int main(){
     user_info = instruction(length, chances, &list);
     int game_is_on = 1;//it shows when game is over
     float average;
-    int i,j,counter,r,r1,r2;
+    int i,j,counter,r,r1,r2,few_treasury = 1,few_court = 1,few_people = 1;
     while(game_is_on){
         if(length == 0){//if length become zero so we have no node and we create all of them again
             list = input_file();
@@ -495,6 +663,27 @@ int main(){
                 length -= 1;
             }
         }
+        //ASCII CODE SHOWING :
+        if(user_info.people > 30)
+            few_people = 1;
+        if(user_info.court > 30)
+            few_court = 1;
+        if(user_info.treasury > 30)
+            few_treasury = 1;
+        if(user_info.people <= 30 && few_people == 1){
+            ASCII_art(2);
+            few_people = 0;
+        }
+        if(user_info.court <= 30 && few_court == 1){
+            ASCII_art(1);
+            few_court = 0;
+        }
+        if(user_info.treasury <= 30 && few_treasury == 1){
+            ASCII_art(3);
+            few_treasury = 0;
+        }
+
+        //part of game when user lose it:
         average = user_info.people + user_info.court + user_info.treasury / 3.0;
         //if one of three parameters become less than zero we change it into zero:
         if(user_info.people < 0)
